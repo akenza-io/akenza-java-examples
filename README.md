@@ -102,9 +102,10 @@ mvn exec:exec -Dmqtt \
     -Dalgorithm=RS256|ES256 \
     -Dprivate_key_file="../path/to/your_rsa_key" \
     -Dexp=-token_exp_minutes=60 \
-    -Dmhn=-mqtt_hostname=mqtt.akenza.io
-    -Dmp=-mqtt_port=1883|8883
-    -Dwt=-wait_time_seconds=300
+    -Dmhn=-mqtt_hostname=mqtt.akenza.io \
+    -Dmp=-mqtt_port=1883|8883 \
+    -Dwt=-wait_time_seconds=300 \
+    -Dwt=-audience=akenza.io
 ```
 
 For private cloud customers, the audience has to be changed accordingly (e.g. `<customer>.akenza.io`).

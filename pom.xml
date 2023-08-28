@@ -130,6 +130,7 @@
                                 <argument>${mhn}</argument>
                                 <argument>${mp}</argument>
                                 <argument>${wt}</argument>
+                                <argument>${aud}</argument>
                             </arguments>
                         </configuration>
                     </plugin>
