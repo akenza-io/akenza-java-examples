@@ -5,7 +5,7 @@ import org.apache.commons.cli.*;
 /**
  * Command line options for the MQTT example.
  */
-public class MqttUplinkOptions {
+public class MqttCommandLineOptions {
     static final Options options = new Options();
     String deviceId;
     String privateKeyFile;
@@ -15,8 +15,9 @@ public class MqttUplinkOptions {
     String mqttHostname = "mqtt.akenza.io";
     int mqttPort = 8883;
     int waitTimeSeconds = 60 * 5;
+    String audience = "akenza.io";
 
-    public static MqttUplinkOptions fromFlags(String... args) {
+    public static MqttCommandLineOptions fromFlags(String... args) {
         // Required arguments
         options.addOption(
                 Option.builder()
@@ -72,7 +73,6 @@ public class MqttUplinkOptions {
                         .hasArg()
                         .desc("Minutes to JWT token refresh (token expiration time).")
                         .build());
-
         options.addOption(
                 Option.builder()
                         .type(Number.class)
@@ -80,12 +80,20 @@ public class MqttUplinkOptions {
                         .hasArg()
                         .desc("Seconds to wait for commands or configuration changes.")
                         .build());
+        options.addOption(
+                Option.builder()
+                        .type(String.class)
+                        .longOpt("audience")
+                        .hasArg()
+                        .desc("The audience for the JWT; has to be set for non-public cloud environments (defaults to akenza.io).")
+                        .build());
+        //TODO allow specifying audiencePrefix
 
         CommandLineParser parser = new DefaultParser();
         CommandLine commandLine;
         try {
             commandLine = parser.parse(options, args);
-            MqttUplinkOptions result = new MqttUplinkOptions();
+            MqttCommandLineOptions result = new MqttCommandLineOptions();
 
             result.deviceId = commandLine.getOptionValue("device_id");
             result.privateKeyFile = commandLine.getOptionValue("private_key_file");
@@ -106,6 +114,10 @@ public class MqttUplinkOptions {
             if (commandLine.hasOption("mqtt_port")) {
                 result.mqttPort = ((Number) commandLine.getParsedOptionValue("mqtt_port")).shortValue();
             }
+            if (commandLine.hasOption("audience")) {
+                result.audience = commandLine.getOptionValue("audience");
+            }
+
             return result;
         } catch (ParseException e) {
             System.err.println(e.getMessage());

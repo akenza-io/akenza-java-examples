@@ -35,7 +35,7 @@ public class MqttExample {
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     public static void main(String[] args) {
-        MqttUplinkOptions options = MqttUplinkOptions.fromFlags(args);
+        MqttCommandLineOptions options = MqttCommandLineOptions.fromFlags(args);
         if (options == null) {
             // could not parse options
             System.exit(-1);
@@ -137,7 +137,7 @@ public class MqttExample {
     /**
      * Connect to the MQTT broker
      */
-    private static MqttClient connect(MqttUplinkOptions options) throws MqttException, InterruptedException, IOException, JOSEException {
+    private static MqttClient connect(MqttCommandLineOptions options) throws MqttException, InterruptedException, IOException, JOSEException {
         final String mqttServerAddress = String.format("ssl://%s:%s", options.mqttHostname, options.mqttPort);
         MqttConnectOptions connectOptions = new MqttConnectOptions();
         connectOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
@@ -149,8 +149,10 @@ public class MqttExample {
         connectOptions.setUserName("unused");
 
         var password = switch (options.algorithm) {
-            case "RS256" -> createJwtRS(options.privateKeyFile, "akenza.io", options.deviceId, options.tokenExpMinutes);
-            case "ES256" -> createJwtES(options.privateKeyFile, "akenza.io", options.deviceId, options.tokenExpMinutes);
+            case "RS256" ->
+                    createJwtRS(options.privateKeyFile, options.audience, options.deviceId, options.tokenExpMinutes);
+            case "ES256" ->
+                    createJwtES(options.privateKeyFile, options.audience, options.deviceId, options.tokenExpMinutes);
             default -> throw new IllegalArgumentException(
                     "Invalid algorithm: " + options.algorithm + ". Should be one of 'RS256' or 'ES256'.");
         };
