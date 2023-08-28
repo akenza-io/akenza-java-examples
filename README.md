@@ -105,7 +105,7 @@ mvn exec:exec -Dmqtt \
     -Dmhn=-mqtt_hostname=mqtt.akenza.io \
     -Dmp=-mqtt_port=1883|8883 \
     -Dwt=-wait_time_seconds=300 \
-    -Dwt=-audience=akenza.io
+    -Daud=-audience=akenza.io
 ```
 
 For private cloud customers, the audience has to be changed accordingly (e.g. `<customer>.akenza.io`).
