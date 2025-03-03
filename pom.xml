@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- versions -->
-        <bouncy-castle.version>1.78</bouncy-castle.version>
+        <bouncy-castle.version>1.80</bouncy-castle.version>
         <nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>
         <org.eclipse.paho.client.version>1.2.5</org.eclipse.paho.client.version>
         <jackson-databind.version>2.16.1</jackson-databind.version>
