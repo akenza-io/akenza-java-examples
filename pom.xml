@@ -44,7 +44,7 @@
 
         <!-- versions -->
         <bouncy-castle.version>1.78</bouncy-castle.version>
-        <nimbus-jose-jwt.version>10.1</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>10.2</nimbus-jose-jwt.version>
         <org.eclipse.paho.client.version>1.2.5</org.eclipse.paho.client.version>
         <jackson-databind.version>2.19.0</jackson-databind.version>
         <commons-cli.version>1.9.0</commons-cli.version>
