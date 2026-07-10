@@ -57,7 +57,7 @@ mvn compile
 mvn exec:exec -Dmqtt \
     -Ddevice_id=965200347BC53111 \
     -Dalgorithm=RS256 \
-    -Dprivate_key_file="./keys/rsa_private.pem"
+    -Dprivate_key_file="./keys/rsa_client_key.key"
 ```
 
 ### Using a Self-Signed EC X509 Certificate
@@ -109,3 +109,88 @@ mvn exec:exec -Dmqtt \
 ```
 
 For private cloud customers, the audience has to be changed accordingly (e.g. `<customer>.akenza.io`).
+
+### Using a Self-Signed RSA X509 Certificate with a Certificate Authority
+
+Create a Certificate Authority (CA) certificate (this only needs to be done once):
+
+```
+mkdir keys
+openssl genrsa -out ./keys/rsa_ca_key.key 2048
+openssl req -x509 -new -nodes \
+    -key ./keys/rsa_ca_key.key \
+    -sha256 -days 1024 \
+    -out ./keys/rsa_ca_cert.pem
+```
+
+Submit the CA certificate (`rsa_ca_cert.pem`) to akenza. Keep the CA private key (`rsa_ca_key.key`) local and secret —
+it is used to sign each device's certificate below.
+
+For each device, generate a device private key, create a CSR, and sign it with the CA to produce the device
+certificate:
+
+```
+openssl genrsa -out ./keys/rsa_client_key.key 2048
+
+# Create a CSR for the device certificate
+openssl req -new \
+    -subj "/CN=<deviceId>" \
+    -key ./keys/rsa_client_key.key \
+    -out ./keys/rsa_client_cert_csr.csr
+
+# Sign the CSR with the CA to produce the device certificate
+openssl x509 -req \
+    -in ./keys/rsa_client_cert_csr.csr \
+    -CA ./keys/rsa_ca_cert.pem \
+    -CAkey ./keys/rsa_ca_key.key \
+    -CAcreateserial \
+    -out ./keys/rsa_client_cert.pem \
+    -days 500 -sha256
+```
+
+Run the example:
+
+```
+mvn compile
+mvn exec:exec -Dmqtt \
+    -Ddevice_id=<deviceId> \
+    -Dalgorithm=RS256 \
+    -Dprivate_key_file="./keys/rsa_client_key.key"
+```
+
+A full example:
+
+```
+mkdir keys
+openssl genrsa -out ./keys/rsa_ca_key.key 2048
+openssl req -x509 -new -nodes \
+    -key ./keys/rsa_ca_key.key \
+    -sha256 -days 1024 \
+    -out ./keys/rsa_ca_cert.pem
+# submit ./keys/rsa_ca_cert.pem to akenza
+
+openssl genrsa -out ./keys/rsa_client_key.key 2048
+openssl req -new \
+    -subj "/CN=E92938F95FBDF0FD" \
+    -key ./keys/rsa_client_key.key \
+    -out ./keys/rsa_client_cert_csr.csr
+openssl x509 -req \
+    -in ./keys/rsa_client_cert_csr.csr \
+    -CA ./keys/rsa_ca_cert.pem \
+    -CAkey ./keys/rsa_ca_key.key \
+    -CAcreateserial \
+    -out ./keys/rsa_client_cert.pem \
+    -days 500 -sha256
+
+mvn compile
+mvn exec:exec -Dmqtt \
+    -Ddevice_id=E92938F95FBDF0FD \
+    -Dalgorithm=RS256 \
+    -Dprivate_key_file="./keys/rsa_client_key.key" \
+    -Dexp=-token_exp_minutes=60 \
+    -Dmhn=-mqtt_hostname=mqtt.akenza.io \
+    -Dmp=-mqtt_port=8883 \
+    -Dwt=-wait_time_seconds=300 \
+    -Daud=-audience=akenza.io
+```
+

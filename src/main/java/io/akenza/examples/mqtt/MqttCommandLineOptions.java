@@ -26,7 +26,7 @@ public class MqttCommandLineOptions {
                         .hasArg()
                         .desc("The physical device id.")
                         .required()
-                        .build());
+                        .get());
         options.addOption(
                 Option.builder()
                         .type(String.class)
@@ -34,7 +34,7 @@ public class MqttCommandLineOptions {
                         .hasArg()
                         .desc("Path to private key file.")
                         .required()
-                        .build());
+                        .get());
         options.addOption(
                 Option.builder()
                         .type(String.class)
@@ -42,7 +42,7 @@ public class MqttCommandLineOptions {
                         .hasArg()
                         .desc("Encryption algorithm to use to generate the JWT. Either 'RS256' or 'ES256'.")
                         .required()
-                        .build());
+                        .get());
 
         // Optional arguments.
         options.addOption(
@@ -51,42 +51,42 @@ public class MqttCommandLineOptions {
                         .longOpt("num_messages")
                         .hasArg()
                         .desc("Number of messages to publish.")
-                        .build());
+                        .get());
         options.addOption(
                 Option.builder()
                         .type(String.class)
                         .longOpt("mqtt_hostname")
                         .hasArg()
                         .desc("MQTT hostname (defaults to mqtt.akenza.io).")
-                        .build());
+                        .get());
         options.addOption(
                 Option.builder()
                         .type(Number.class)
                         .longOpt("mqtt_port")
                         .hasArg()
                         .desc("MQTT bridge port (defaults to 8883).")
-                        .build());
+                        .get());
         options.addOption(
                 Option.builder()
                         .type(Number.class)
                         .longOpt("token_exp_minutes")
                         .hasArg()
                         .desc("Minutes to JWT token refresh (token expiration time).")
-                        .build());
+                        .get());
         options.addOption(
                 Option.builder()
                         .type(Number.class)
                         .longOpt("wait_time_seconds")
                         .hasArg()
                         .desc("Seconds to wait for commands or configuration changes.")
-                        .build());
+                        .get());
         options.addOption(
                 Option.builder()
                         .type(String.class)
                         .longOpt("audience")
                         .hasArg()
                         .desc("The audience for the JWT; has to be set for non-public cloud environments (defaults to akenza.io).")
-                        .build());
+                        .get());
         //TODO allow specifying audiencePrefix
 
         CommandLineParser parser = new DefaultParser();
@@ -120,6 +120,7 @@ public class MqttCommandLineOptions {
 
             return result;
         } catch (ParseException e) {
+            System.err.println("could not parse command line options:");
             System.err.println(e.getMessage());
             return null;
         }

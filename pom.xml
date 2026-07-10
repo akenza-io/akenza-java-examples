@@ -38,16 +38,17 @@
     </developers>
 
     <properties>
-        <maven.compiler.source>18</maven.compiler.source>
-        <maven.compiler.target>18</maven.compiler.target>
+        <maven.compiler.source>26</maven.compiler.source>
+        <maven.compiler.target>26</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- versions -->
-        <bouncy-castle.version>1.78</bouncy-castle.version>
-        <nimbus-jose-jwt.version>10.3</nimbus-jose-jwt.version>
+        <bouncy-castle.version>1.84</bouncy-castle.version>
+        <nimbus-jose-jwt.version>10.9.1</nimbus-jose-jwt.version>
         <org.eclipse.paho.client.version>1.2.5</org.eclipse.paho.client.version>
-        <jackson-databind.version>2.19.0</jackson-databind.version>
-        <commons-cli.version>1.9.0</commons-cli.version>
+        <jackson-databind.version>3.2.0</jackson-databind.version>
+        <commons-cli.version>1.11.0</commons-cli.version>
+        <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
     </properties>
 
     <repositories>
@@ -64,7 +65,7 @@
             <version>${commons-cli.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson-databind.version}</version>
         </dependency>
@@ -108,7 +109,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.5.1</version>
+                        <version>${exec-maven-plugin.version}</version>
                         <executions>
                             <execution>
                                 <goals>
