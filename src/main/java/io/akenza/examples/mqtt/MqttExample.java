@@ -1,7 +1,5 @@
 package io.akenza.examples.mqtt;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -15,6 +13,8 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,7 +32,7 @@ import java.util.Properties;
  */
 public class MqttExample {
     private static MqttCallback mCallback;
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static JsonMapper jsonMapper = new JsonMapper();
 
     public static void main(String[] args) {
         MqttCommandLineOptions options = MqttCommandLineOptions.fromFlags(args);
@@ -47,7 +47,7 @@ public class MqttExample {
             // publish numMessages messages to the MQTT broker, at a rate of 1 message per second
             for (int i = 1; i <= options.numMessages; ++i) {
                 Map<String, Object> payload = Map.of("temperature", 12 * i);
-                MqttMessage message = new MqttMessage(objectMapper.writeValueAsBytes(payload));
+                MqttMessage message = new MqttMessage(jsonMapper.writeValueAsBytes(payload));
                 System.out.format("Publishing message %d/%d: to topic '%s'  '%s'%n", i, options.numMessages, topic, payload);
 
                 //TODO implement token refresh
@@ -213,11 +213,11 @@ public class MqttExample {
                     @Override
                     public void messageArrived(String topic, MqttMessage message) {
                         try {
-                            Map<String, Object> payload = objectMapper.readValue(message.getPayload(), new TypeReference<Map<String, Object>>() {
+                            Map<String, Object> payload = jsonMapper.readValue(message.getPayload(), new TypeReference<Map<String, Object>>() {
                             });
                             System.out.println("Payload : " + payload);
                             // TODO: Insert your handling of commands and configuration message here
-                        } catch (IOException ex) {
+                        } catch (Exception ex) {
                             System.err.println("could not parse message: " + ex.getMessage());
                         }
                     }
